@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS messages (
+    message_id UUID PRIMARY KEY,
+    chat_id VARCHAR(32) NOT NULL,
+    sender_id VARCHAR(64) NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS chat_users (
+    chat_id VARCHAR(32) NOT NULL,
+    user_id VARCHAR(64) NOT NULL,
+    joined_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (chat_id, user_id)
+);

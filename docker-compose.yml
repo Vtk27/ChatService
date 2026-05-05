@@ -1,0 +1,23 @@
+services:
+  redis:
+    image: redis/redis-stack:latest
+    container_name: chatservice-redis
+    ports:
+      - "6379:6379"
+      - "8002:8001"
+    environment:
+      - REDIS_ARGS=--save "" --appendonly no
+  postgres:
+    image: postgres:16-alpine
+    container_name: chatservice-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: chatservice
+      POSTGRES_USER: chatservice
+      POSTGRES_PASSWORD: chatservice
+    volumes:
+      - chatservice-postgres-data:/var/lib/postgresql/data
+
+volumes:
+  chatservice-postgres-data:
