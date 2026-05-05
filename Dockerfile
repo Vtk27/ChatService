@@ -11,7 +11,7 @@ RUN mvn clean package -DskipTests
 #1) tell docker to start with java 17 only and so only contains whats needed to run java
 #2)create a app folder 3) it reaches back to build stage and graps only jar file to create new image
 #4) app listens to port 8080 5) command to run when container launches runs java jar file
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
