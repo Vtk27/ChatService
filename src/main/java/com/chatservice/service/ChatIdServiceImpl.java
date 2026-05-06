@@ -84,7 +84,7 @@ public class ChatIdServiceImpl implements ChatIdService {
                 return Map.of("status", "error", "messageCode", "CS006");
             }
             
-            if(setOps.size(key) >= 2){
+            if(setOps.size(key) >= 3){
                 log.warn("Join chat failed: chatId full: chatId={}, userId={}, key={}", chatId, userId, key);
                 return Map.of("status", "error", "messageCode", "CS005");
             }
