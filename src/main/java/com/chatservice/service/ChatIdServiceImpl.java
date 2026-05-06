@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.security.SecureRandom;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class ChatIdServiceImpl implements ChatIdService {
@@ -46,10 +47,11 @@ public class ChatIdServiceImpl implements ChatIdService {
             String chatId = sb.toString();
             String key = CHAT_USERS_KEY_PREFIX + chatId + CHAT_USERS_KEY_SUFFIX;
             setOps.add(key, userId);
+            stringRedisTemplate.expire(key, 30, TimeUnit.MINUTES);
             chatUserDao.addUserToChat(chatId, userId);
             
             String userKey = "user:" + userId + ":chat";
-            stringRedisTemplate.opsForValue().set(userKey, chatId);
+            stringRedisTemplate.opsForValue().set(userKey, chatId, 30, TimeUnit.MINUTES);
 
             log.info("Created chatId and added user to Redis: chatId={}, userId={}, key={}", chatId, userId, key);
             return Map.of("status", "ok", "chatId", chatId);
@@ -66,9 +68,8 @@ public class ChatIdServiceImpl implements ChatIdService {
                 return Map.of("status", "error", "messageCode", "CS003");
             }
             
-            if(isUserInChat(userId , chatId)){
-                log.warn("Join chat failed: user already in a chat: userId={}", userId);
-                return Map.of("status", "error", "messageCode", "CS006");
+            if(chatId == null || chatId.isBlank()) {
+               return Map.of("status", "error", "messageCode", "CS001"); 
             }
             
             String key = CHAT_USERS_KEY_PREFIX + chatId + CHAT_USERS_KEY_SUFFIX;
@@ -77,6 +78,12 @@ public class ChatIdServiceImpl implements ChatIdService {
                 log.warn("Join chat failed: chatId not found: chatId={}, userId={}, key={}", chatId, userId, key);
                 return Map.of("status", "error", "messageCode", "CS001");
             }
+
+            if(isUserInChat(userId , chatId)){
+                log.warn("Join chat failed: user already in a chat: userId={}", userId);
+                return Map.of("status", "error", "messageCode", "CS006");
+            }
+            
             if(setOps.size(key) >= 2){
                 log.warn("Join chat failed: chatId full: chatId={}, userId={}, key={}", chatId, userId, key);
                 return Map.of("status", "error", "messageCode", "CS005");
@@ -85,7 +92,7 @@ public class ChatIdServiceImpl implements ChatIdService {
             chatUserDao.addUserToChat(chatId, userId);
 
             String userKey = "user:" + userId + ":chat";
-            stringRedisTemplate.opsForValue().set(userKey, chatId);
+            stringRedisTemplate.opsForValue().set(userKey, chatId, 30, TimeUnit.MINUTES);
             
             log.info("User connected to chatId={}, current users={}", chatId, setOps.members(key));
         

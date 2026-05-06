@@ -42,6 +42,10 @@ public class ChatIdController {
         return ResponseEntity.ok(Map.of("message", "Successfully joined the chat."));
     }
 
+    @GetMapping("/health")
+    public String cheakHealth(){
+        return "OK";
+    }
     private ResponseEntity<Map<String, String>> errorBody(String messageCode) {
         Messages message = Messages.valueOf(messageCode);
         return ResponseEntity.status(message.getStatusCode()).body(Map.of("message", message.getMessage()));

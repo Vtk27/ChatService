@@ -1,6 +1,6 @@
 package com.chatservice.api;
 
-import com.chatservice.dao.MessageDao;
+import com.chatservice.service.MessageService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,10 +10,10 @@ import java.util.List;
 @RestController
 public class MessageController {
 
-    private final MessageDao messageDao;
+    private final MessageService messageService;
 
-    public MessageController(MessageDao messageDao) {
-        this.messageDao = messageDao;
+    public MessageController(MessageService messageService) {
+        this.messageService = messageService;
     }
 
     @GetMapping("/messages")
@@ -22,6 +22,6 @@ public class MessageController {
             @RequestParam(value = "lastMessageId", required = false) String lastMessageId,
             @RequestParam(value = "limit", required = false) Integer limit
     ) {
-        return messageDao.getMessages(chatId, lastMessageId, limit);
+        return messageService.getMessages(chatId, lastMessageId, limit);
     }
 }
