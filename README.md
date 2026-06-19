@@ -8,10 +8,18 @@ The project focuses on the core pieces behind a real-time chat application by wi
 
 - creates a chat room ID for a user
 - lets another user join an existing chat
+- currently supports up to 3 members in a chat room
 - opens a WebSocket connection for live messaging
 - stores messages in PostgreSQL
 - uses Redis for chat membership and pub/sub style message fan-out
 - exposes a simple `/health` endpoint for uptime checks
+
+## How to use the app
+
+1. Enter a username and create a chat.
+2. Copy the generated chat ID and share it with a friend.
+3. The second user enters their username and the shared chat ID.
+4. Up to 3 members can join the same chat room and start messaging in real time.
 
 ## Tech stack
 
